@@ -27,10 +27,19 @@ Editing the buttons later = editing the Gist in a browser. No code, no redeploy.
 
 ```json
 [
-  { "label": "Visitor",  "emoji": "🔔", "title": "Someone's at the door", "message": "A visitor is at the door." },
-  { "label": "Delivery", "emoji": "📦", "title": "Delivery",              "message": "A delivery has arrived." }
+  { "label": "Visitor",  "emoji": "🔔", "title": "Someone's at the door", "message": "A visitor is at the door.",
+    "reply": "Thanks — I've been notified." },
+  { "label": "Delivery", "emoji": "📦", "title": "Delivery", "message": "A delivery has arrived.",
+    "reply": "I'm not in right now — please leave it on top of the bins, thank you." }
 ]
 ```
+
+`reply` is optional — if a button omits it, the page falls back to a generic "Sent —
+thank you." `reply` is what the *scanner* sees on-screen after tapping (e.g.
+instructions for a delivery driver); `title`/`message` is what arrives in the
+Pushover notification to you. Editing `reply` later (e.g. swapping the delivery
+instructions between "leave on bins" and "call me") is just a Gist edit, same as
+any other button change.
 
 - Click the file's "Raw" button, copy that URL.
 - Paste it into `index.html` as `GIST_RAW_URL`.

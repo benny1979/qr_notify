@@ -140,7 +140,7 @@
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ title: button.title, message: button.message })
       });
-      statusEl.textContent = 'Sent — thank you.';
+      statusEl.textContent = button.reply || 'Sent — thank you.';
       statusEl.classList.add('sent');
     } catch (err) {
       statusEl.textContent = 'Something went wrong — please try again.';
