@@ -116,7 +116,12 @@
       buttons.forEach(b => {
         const btn = document.createElement('button');
         btn.className = 'door-btn';
-        btn.innerHTML = `<span class="emoji">${b.emoji || ''}</span><span>${b.label}</span>`;
+        const emoji = document.createElement('span');
+        emoji.className = 'emoji';
+        emoji.textContent = b.emoji || '';
+        const label = document.createElement('span');
+        label.textContent = b.label;
+        btn.append(emoji, label);
         btn.addEventListener('click', () => send(b, btn));
         buttonsEl.appendChild(btn);
       });
