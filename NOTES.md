@@ -81,7 +81,8 @@ any other button change.
 ```javascript
 export default defineComponent({
   async run({ steps, $ }) {
-    const { title, message } = steps.trigger.event.body;
+    const { title, message } = steps.trigger.event.body || {};
+    if (!title || !message) return; // ignore stray/malformed requests (bots, empty pings)
     await fetch("https://api.pushover.net/1/messages.json", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -95,6 +96,11 @@ export default defineComponent({
   },
 });
 ```
+
+The webhook URL is public (visible in `index.html`'s source), so it will
+occasionally get hit by bots/scanners probing random URLs with no body at all
+— the guard above just ignores those instead of erroring. Real button clicks
+always send a proper `title`/`message` body, so this doesn't affect normal use.
 
 ### 4. Test end to end
 - Open the GitHub Pages URL, tap a button, confirm the Pushover notification arrives.
