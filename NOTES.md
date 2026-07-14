@@ -4,6 +4,22 @@ Scan a QR code on the door → pick a reason (Visitor / Delivery / etc.) on a si
 web page → get a Pushover notification. No app needed for the visitor, no
 account, nothing typed.
 
+## Live setup (as of 2026-07-14)
+
+- Door page: https://benny1979.github.io/qr_notify/
+- `door-qr.png` in this repo is the printed QR code, already pointing at the URL above.
+- Button config: a **secret** Gist (`7c25da9fc398fa08f7e7f028797305b5` — replaced
+  the original public one once we realised a `reply` field might hold a phone
+  number). Editing it directly in the Gist UI still works, but the easier way
+  is the admin tool below.
+- To edit buttons without touching the Gist UI or any code, use `gist_editor`
+  (a separate reusable project, `G:\My Drive\Notes\AI\gist_editor\NOTES.md`):
+  bookmark
+  `https://benny1979.github.io/gist_editor/?gist=https://gist.githubusercontent.com/benny1979/7c25da9fc398fa08f7e7f028797305b5/raw/buttons.json&gistId=7c25da9fc398fa08f7e7f028797305b5&file=buttons.json`
+  — password is the one saved in Bitwarden (see `gist_editor/NOTES.md`).
+- Pipedream workflow `QR-door-notify` holds `PUSHOVER_TOKEN`/`PUSHOVER_USER` and
+  is already deployed and wired into `index.html`.
+
 ```
 QR code (printed once)
   -> GitHub Pages page (index.html)
@@ -23,7 +39,12 @@ Editing the buttons later = editing the Gist in a browser. No code, no redeploy.
   e.g. `https://<user>.github.io/qr_notify/`. This is what the printed QR code will point to.
 
 ### 2. Gist for button config
-- Create a Gist at gist.github.com containing one file, `buttons.json`:
+- Create a **secret** Gist (`gh gist create` without `--public`, or the "secret"
+  option at gist.github.com) containing one file, `buttons.json` — secret
+  because a button's `reply` text might contain personal details (e.g. a phone
+  number) meant only for whoever scans that specific button, not for anyone
+  who stumbles on the raw URL. Note secret just means unlisted, not
+  access-controlled — anyone with the exact raw URL can still read it.
 
 ```json
 [
@@ -41,10 +62,14 @@ Pushover notification to you. Editing `reply` later (e.g. swapping the delivery
 instructions between "leave on bins" and "call me") is just a Gist edit, same as
 any other button change.
 
-- Click the file's "Raw" button, copy that URL.
+- Click the file's "Raw" button, copy that URL, dropping the commit-hash segment
+  so it always serves the latest edit (`.../raw/buttons.json`, not
+  `.../raw/<hash>/buttons.json`).
 - Paste it into `index.html` as `GIST_RAW_URL`.
-- To add/rename/remove a button later: open the Gist, Edit, change the JSON, Update
-  public gist. Takes effect immediately, no redeploy.
+- To add/rename/remove a button later: either edit the Gist directly (Edit,
+  change the JSON, Update gist), or use the `gist_editor` admin tool (see "Live
+  setup" above) for a form instead of hand-editing JSON. Both take effect
+  immediately, no redeploy.
 
 ### 3. Pipedream workflow
 - New workflow at pipedream.com, trigger = **HTTP / Webhook**. Copy the endpoint URL.
